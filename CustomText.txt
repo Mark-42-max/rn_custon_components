@@ -1,0 +1,36 @@
+import { StyleSheet, Text, View } from 'react-native'
+import React, { useState } from 'react'
+import { useEffect } from 'react'
+
+const CustomText = ({children, numberOfLines, customstyle, type}) => {
+
+    const [fontType, setFontType] = useState('PlusJakartaSans-Regular')
+
+    useEffect(() => {
+        if(type === 'bold'){
+            setFontType('PlusJakartaSans-Bold')
+        }else if(type === 'semi-bold'){
+            setFontType('PlusJakartaSans-SemiBold')
+        }else if(type === 'regular'){
+            setFontType('PlusJakartaSans-Regular')
+        }
+
+        // if('fontFamily' in customstyle){
+        //     setFontType(customstyle['fontFamily'])
+        // }
+    }, [type])
+
+  return (
+    <View>
+      <Text numberOfLines={numberOfLines} style={
+        StyleSheet.flatten(customstyle) !== undefined ? 
+        
+        [customstyle, {fontFamily: fontType}] : 
+        
+        [{...StyleSheet.flatten(customstyle)}, {fontFamily: fontType}]}>{children}</Text>
+    </View>
+  )
+}
+
+export default CustomText
+

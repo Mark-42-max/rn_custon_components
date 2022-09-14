@@ -1,0 +1,104 @@
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import Star from '../assets/svg/Star'
+
+const CustomStars = ({noOfStars, initialRating, onRatingChange, readonly, starsize, space, borderColor}) => {
+
+    const [maxStars, setMaxStars] = useState(5);
+    const [rating, setRating] = useState(4.5);
+    const [ratingArray, setRatingArray] = useState([1,2,3,4,5])
+    const [spacing, setSpacing] = useState(2);
+    const [sizeOfStar, setSizeOfStar] = useState(4);
+    const [border, setBorder] = useState('#000');
+
+    const Decimal = (number) => {
+        let tenMultipliedNumber = number * 10;
+        let decimal = tenMultipliedNumber%10;
+        return decimal;
+    }
+
+    const handleRatingPress = (ratingItem) => {
+        onRatingChange(ratingItem)
+    }
+
+    useEffect(() => {
+        setSizeOfStar(starsize)
+    }, [starsize])
+    
+    useEffect(() => {
+        setBorder(borderColor)
+    }, [borderColor])
+
+    useEffect(() => {
+        setSpacing(space)
+    }, [space])
+
+    useEffect(() => {
+        setRating(initialRating);
+    }, [initialRating])
+
+    useEffect(() => {
+        setMaxStars(noOfStars)
+    }, [noOfStars])
+
+    useEffect(() => {
+
+        let i = 0;
+        const newArr = []
+        for(i = 0; i<maxStars; i++){
+            let j = i + 1;
+            newArr.push(j)
+        }
+
+        setRatingArray(newArr);
+    }, [maxStars])
+
+  return (
+    <>
+    <View style={styles.container}>
+      {ratingArray.map(item => {
+
+        if(item <= Math.floor(rating) && item > 0){
+            return(
+                <TouchableOpacity style={{paddingHorizontal: spacing}} onPress={() => handleRatingPress(item)} key={item}>
+                    <Star percent={100} size={sizeOfStar} border={border}/>
+                </TouchableOpacity>
+            )
+        }else if(item == Math.ceil(rating)){
+            return(
+                <TouchableOpacity style={{paddingHorizontal: spacing}} onPress={() => handleRatingPress(item)} key={item}>
+                    <Star percent={Decimal(rating) * 10} size={sizeOfStar} border={border}/>
+                </TouchableOpacity>
+            )
+        }else if(item > Math.ceil(rating) && item <= maxStars){
+            return(
+                <TouchableOpacity style={{paddingHorizontal: spacing}} onPress={() => handleRatingPress(item)} key={item}>
+                    <Star percent={0} size={sizeOfStar} border={border}/>
+                </TouchableOpacity>
+            )
+        }
+      })}
+    </View>
+
+    {readonly && <View style={styles.blockView}></View>}
+    </>
+  )
+}
+
+export default CustomStars
+
+const styles = StyleSheet.create({
+    container: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+
+    blockView: {
+        backgroundColor: 'transparent',
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+        left: 60
+    }
+});
